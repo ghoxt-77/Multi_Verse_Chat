@@ -1,9 +1,11 @@
-
 export interface Message {
   id: string;
   text: string;
   userId: string;
   timestamp: string;
+  type?: 'text' | 'audio' | 'image';
+  audioUrl?: string;
+  imageUrl?: string;
 }
 
 export interface User {
@@ -230,7 +232,6 @@ export const categories: Category[] = [
   },
 ];
 
-// Current user simulation
 export const currentUser: User = {
   id: "current",
   name: "Você",
@@ -238,7 +239,6 @@ export const currentUser: User = {
   isOnline: true,
 };
 
-// Initial state (can be used in your React components)
 export const initialState = {
   currentCategory: categories[0],
   currentChannel: categories[0].channels[0],

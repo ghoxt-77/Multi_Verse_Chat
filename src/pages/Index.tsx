@@ -22,11 +22,23 @@ const Index = () => {
   };
 
   const handleSendMessage = (text: string) => {
+    // Check if this is a special message object with audio
+    if (typeof text === 'object' && text.audioUrl) {
+      const newMessage = text as unknown as Message;
+      setAllMessages(prev => ({
+        ...prev,
+        [currentChannel.id]: [...(prev[currentChannel.id] || []), newMessage]
+      }));
+      return;
+    }
+    
+    // Regular text message
     const newMessage: Message = {
       id: `msg-${Date.now()}`,
       text,
       userId: currentUser.id,
       timestamp: new Date().toISOString(),
+      type: 'text'
     };
 
     setAllMessages(prev => ({

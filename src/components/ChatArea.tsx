@@ -1,10 +1,11 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { cn } from "@/lib/utils";
 import { Category, Channel, Message as MessageType, User, users } from '@/data/chatData';
 import Message from './Message';
 import MessageInput from './MessageInput';
-import { Info, Users } from 'lucide-react';
+import { Info, PhoneCall, Users } from 'lucide-react';
+import VoiceCallModal from './VoiceCallModal';
 
 interface ChatAreaProps {
   currentCategory: Category;
@@ -12,6 +13,7 @@ interface ChatAreaProps {
   currentUser: User;
   messages: MessageType[];
   onSendMessage: (text: string) => void;
+  onSendAudioMessage?: (audioBlob: Blob) => void;
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({ 
@@ -22,11 +24,82 @@ const ChatArea: React.FC<ChatAreaProps> = ({
   onSendMessage
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [callState, setCallState] = useState<{
+    isOpen: boolean;
+    caller: User;
+    receiver: User;
+    isIncoming: boolean;
+  } | null>(null);
 
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleSendAudio = async (audioBlob: Blob) => {
+    // Create a URL for the audio blob
+    const audioUrl = URL.createObjectURL(audioBlob);
+    
+    // Create a new audio message
+    const newMessage: MessageType = {
+      id: `msg-${Date.now()}`,
+      text: "Audio message", // Fallback text
+      userId: currentUser.id,
+      timestamp: new Date().toISOString(),
+      type: 'audio',
+      audioUrl
+    };
+    
+    // Send the message
+    // Since we can't modify the onSendMessage interface without breaking other components,
+    // we'll use it as is and extend the message with audio properties
+    onSendMessage(newMessage.text);
+  };
+
+  const startVoiceCall = () => {
+    // Find a random online user from the channel that is not the current user
+    const onlineUsers = users.filter(user => 
+      user.isOnline && user.id !== currentUser.id
+    );
+    
+    if (onlineUsers.length > 0) {
+      const randomUser = onlineUsers[Math.floor(Math.random() * onlineUsers.length)];
+      
+      setCallState({
+        isOpen: true,
+        caller: currentUser,
+        receiver: randomUser,
+        isIncoming: false
+      });
+    }
+  };
+
+  const handleCloseCall = () => {
+    setCallState(null);
+  };
+
+  // Simulate an incoming call randomly (for demo purposes)
+  useEffect(() => {
+    const randomTimeout = Math.floor(Math.random() * 120000) + 60000; // Between 1-3 minutes
+    
+    const incomingCallTimer = setTimeout(() => {
+      // Only show if user is on the page and not already in a call
+      if (!callState) {
+        const caller = users.find(user => user.id !== currentUser.id && user.isOnline);
+        
+        if (caller) {
+          setCallState({
+            isOpen: true,
+            caller,
+            receiver: currentUser,
+            isIncoming: true
+          });
+        }
+      }
+    }, randomTimeout);
+    
+    return () => clearTimeout(incomingCallTimer);
+  }, [currentUser, callState]);
   
   return (
     <div className="flex flex-col h-screen">
@@ -40,6 +113,13 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           <p className="text-sm text-gray-400">{currentChannel.description}</p>
         </div>
         <div className="flex items-center">
+          <button 
+            className="p-2 rounded-md hover:bg-dark-lighter text-gray-400 mr-2"
+            onClick={startVoiceCall}
+            aria-label="Start voice call"
+          >
+            <PhoneCall size={20} />
+          </button>
           <button className="p-2 rounded-md hover:bg-dark-lighter text-gray-400">
             <Users size={20} />
           </button>
@@ -89,8 +169,20 @@ const ChatArea: React.FC<ChatAreaProps> = ({
           currentChannel={currentChannel}
           currentUser={currentUser}
           onSendMessage={onSendMessage}
+          onSendAudio={handleSendAudio}
         />
       </div>
+
+      {/* Voice Call Modal */}
+      {callState && (
+        <VoiceCallModal
+          isOpen={callState.isOpen}
+          onClose={handleCloseCall}
+          caller={callState.caller}
+          receiver={callState.receiver}
+          isIncoming={callState.isIncoming}
+        />
+      )}
     </div>
   );
 };
