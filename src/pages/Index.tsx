@@ -23,7 +23,7 @@ const Index = () => {
 
   const handleSendMessage = (text: string) => {
     // Check if this is a special message object with audio
-    if (typeof text === 'object' && text.audioUrl) {
+    if (typeof text === 'object' && text && 'audioUrl' in text) {
       const newMessage = text as unknown as Message;
       setAllMessages(prev => ({
         ...prev,

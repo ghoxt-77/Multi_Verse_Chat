@@ -19,6 +19,9 @@ const emojiCategories = [
   { name: "Animals", emojis: ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐸", "🐵"] },
   { name: "Food", emojis: ["🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🍈", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝"] },
   { name: "Games", emojis: ["🎮", "🕹️", "🎲", "♟️", "🎯", "🎳", "🎪", "🎭", "🎨", "🧩", "🎰", "🎮", "🎬", "🎤", "🎧"] },
+  { name: "Custom", emojis: [
+    <img key="custom-emoji-1" src="/lovable-uploads/c4d861f1-dd71-489b-9d44-aa01986608b3.png" alt="Custom Bot Emoji" className="w-6 h-6 inline-block" />
+  ] },
 ];
 
 const MessageInput: React.FC<MessageInputProps> = ({ 
@@ -40,8 +43,14 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-  const addEmoji = (emoji: string) => {
-    setMessage(prev => prev + emoji);
+  const addEmoji = (emoji: string | JSX.Element) => {
+    // If emoji is a JSX Element (custom image), use its alt text or a placeholder
+    if (React.isValidElement(emoji)) {
+      const imgElement = emoji as React.ReactElement<{alt: string}>;
+      onSendMessage(`[Custom Emoji: ${imgElement.props.alt || 'Bot'}]`);
+    } else {
+      setMessage(prev => prev + emoji);
+    }
   };
 
   const startRecording = async () => {
