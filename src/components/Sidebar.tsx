@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Header */}
       <div className="p-4 border-b border-dark-lighter flex items-center justify-between">
         {!isSidebarCollapsed && (
-          <h1 className="text-xl font-bold text-white">GeekVerse</h1>
+          <h1 className="text-xl font-bold text-white">MultVerse</h1>
         )}
         <button 
           onClick={toggleSidebar}
