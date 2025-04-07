@@ -21,7 +21,8 @@ const Index = () => {
     setCurrentChannel(channel);
   };
 
-  const handleSendMessage = (text: string) => {
+  // Updated function signature to accept string or object
+  const handleSendMessage = (text: string | { audioUrl: string; text: string; type: string; userId: string; }) => {
     // Check if this is a special message object with audio
     if (typeof text === 'object' && text && 'audioUrl' in text) {
       const newMessage = text as unknown as Message;
