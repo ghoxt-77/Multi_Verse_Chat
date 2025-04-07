@@ -70,6 +70,21 @@
   ::-webkit-scrollbar-thumb {
     @apply bg-geek/70 rounded hover:bg-geek transition-colors;
   }
+  
+  /* Cursor utilities */
+  .cursor-none {
+    cursor: none;
+  }
+  
+  /* For elements that should show default cursor */
+  .cursor-default {
+    cursor: default !important;
+  }
+  
+  /* For elements that should show pointer cursor */
+  .cursor-pointer {
+    cursor: pointer !important;
+  }
 }
 
 @layer components {

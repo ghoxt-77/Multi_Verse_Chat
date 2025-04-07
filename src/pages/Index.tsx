@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ChatArea from '@/components/ChatArea';
+import CustomCursor from '@/components/CustomCursor';
 import { categories, Category, Channel, currentUser, initialState, Message } from '@/data/chatData';
 
 const Index = () => {
@@ -36,7 +37,7 @@ const Index = () => {
     // Regular text message
     const newMessage: Message = {
       id: `msg-${Date.now()}`,
-      text,
+      text: typeof text === 'string' ? text : text.text, // Fix the type error
       userId: currentUser.id,
       timestamp: new Date().toISOString(),
       type: 'text'
@@ -50,6 +51,7 @@ const Index = () => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-dark">
+      <CustomCursor />
       <Sidebar 
         currentCategory={currentCategory}
         currentChannel={currentChannel}
