@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ChatArea from '@/components/ChatArea';
-import CustomCursor from '@/components/CustomCursor';
 import { categories, Category, Channel, currentUser, initialState, Message } from '@/data/chatData';
 
 const Index = () => {
@@ -51,7 +50,6 @@ const Index = () => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-dark">
-      <CustomCursor />
       <Sidebar 
         currentCategory={currentCategory}
         currentChannel={currentChannel}

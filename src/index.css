@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -95,21 +96,6 @@
   
   ::-webkit-scrollbar-thumb {
     @apply bg-geek/70 rounded hover:bg-geek transition-colors;
-  }
-  
-  /* Cursor utilities */
-  .cursor-none {
-    cursor: none;
-  }
-  
-  /* For elements that should show default cursor */
-  .cursor-default {
-    cursor: default !important;
-  }
-  
-  /* For elements that should show pointer cursor */
-  .cursor-pointer {
-    cursor: pointer !important;
   }
   
   /* Animation utilities */
